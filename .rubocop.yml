@@ -1,4 +1,10 @@
 
+AllCops:
+  Exclude:
+    - Rakefile
+    - bin/console
+    - prolog-services-replace_content.gemspec
+
 Metrics/AbcSize:
   Exclude:
     - test/prolog/use_cases/propose_edit_contribution_test.rb

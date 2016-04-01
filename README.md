@@ -1,5 +1,8 @@
 # Prolog::Services::ReplaceContent
 
+[ ![Codeship Status for TheProlog/prolog-services-replace_content](https://codeship.com/projects/de342330-da58-0133-0093-5a647b2fc712/status?branch=master)](https://codeship.com/projects/143778) [![Code Climate](https://codeclimate.com/github/TheProlog/prolog-services-replace_content/badges/gpa.svg)](https://codeclimate.com/github/TheProlog/prolog-services-replace_content) [![Test Coverage](https://codeclimate.com/github/TheProlog/prolog-services-replace_content/badges/coverage.svg)](https://codeclimate.com/github/TheProlog/prolog-services-replace_content/coverage) [![Issue Count](https://codeclimate.com/github/TheProlog/prolog-services-replace_content/badges/issue_count.svg)](https://codeclimate.com/github/TheProlog/prolog-services-replace_content)
+
+
 This Gem was extracted from an internally-developed application, which should somewhat explain the namespacing.
 
 The Gem provides an (extremely) simple API for replacing a substring of "existing" HTML content, specified by zero-based endpoint indexes, with valid Markdown content, which may be partly or completely comprised of embedded HTML. Detailed API usage is documented below.
