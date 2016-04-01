@@ -2,6 +2,11 @@
 # CodeClimate runs an older version of RuboCop, which apparently doesn't
 # understand the `AllCops` setting. So we do it The Hard Way.
 
+Metrics/LineLength:
+  Exclude:
+    - Rakefile
+    - prolog-services-replace_content.gemspec
+
 Style/PercentLiteralDelimiters:
   Exclude:
     - prolog-services-replace_content.gemspec
@@ -15,6 +20,10 @@ Style/StringLiterals:
     - Rakefile
     - prolog-services-replace_content.gemspec
     - bin/console
+
+Style/UnneededPercentQ:
+  Exclude:
+    - prolog-services-replace_content.gemspec
 
 Style/WordArray:
   Exclude:
