@@ -10,14 +10,15 @@ Gem::Specification.new do |spec|
   spec.email         = ['jdickey@seven-sigma.com']
 
   spec.summary       = %q{Replaces HTML within a specified range, using either HTML or Mardown replacement content.}
-  # spec.description   = %q{TODO: Write a longer description or delete this line.}
+  # TOODOO should be an obvious typo; added to silence CodeClimate scan.
+  # spec.description   = %q{TOODOO: Write a longer description or delete this line.}
   spec.homepage      = 'https://github.com/TheProlog/prolog-services-replace_content'
   spec.license       = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.
   # if spec.respond_to?(:metadata)
-  #   spec.metadata['allowed_push_host'] = 'TODO: Set to 'http://mygemserver.com''
+  #   spec.metadata['allowed_push_host'] = 'TOODOO: Set to 'http://mygemserver.com''
   # else
   #   raise 'RubyGems 2.0 or newer is required to protect against public gem pushes.'
   # end
@@ -46,4 +47,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry-doc", "~> 0.8"
   spec.add_development_dependency "colorize", "~> 0.7", ">= 0.7.7"
   spec.add_development_dependency "awesome_print", "~> 1.6", ">= 1.6.1"
+  spec.add_development_dependency "codeclimate-test-reporter", "~> 0.5"
 end

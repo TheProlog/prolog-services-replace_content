@@ -1,0 +1,8 @@
+
+Metrics/AbcSize:
+  Exclude:
+    - test/prolog/use_cases/propose_edit_contribution_test.rb
+
+Metrics/MethodLength:
+  Exclude:
+    - test/prolog/use_cases/propose_edit_contribution_test.rb
