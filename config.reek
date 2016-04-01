@@ -1,0 +1,8 @@
+
+LongParameterList:
+  max_params: 4  # If it's good enough for Sandi, it's good enough for us.
+
+NestedIterators:
+  max_allowed_nesting: 2
+  ignore_iterators:
+    - lambda
