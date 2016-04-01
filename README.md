@@ -197,9 +197,9 @@ Returns `true` if no attributes have been modified since a successful call to `#
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `bundle exec rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. *If you are a maintainer with write access to this repository,* to release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org). *Non-maintainers must not run this command*, and attempting to do so will fail.
+To install this gem onto your local machine, run `rake install`. *If you are a maintainer with write access to this repository,* to release a new version, update the version number in `version.rb`, and then run `rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org). *Non-maintainers must not run this command*, and attempting to do so will fail.
 
 ## Contributing
 
