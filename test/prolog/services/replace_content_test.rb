@@ -28,4 +28,31 @@ describe 'Prolog::Services::ReplaceContent' do
       end
     end # describe 'accepts parameters for'
   end # describe 'initialisation'
+
+  describe 'when setting all attributes in the initialiser' do
+    describe 'with a complete set of valid attributes' do
+      describe 'using source content as HTML' do
+        it 'is valid'
+
+        it 'has no errors'
+
+        it 'produces correct converted content'
+
+        it 'does not modify the original content'
+      end # describe 'using source content as HTML'
+
+      describe 'using source content as Markdown' do
+        it 'is valid'
+
+        it 'has no errors'
+
+        it 'produces correct converted content'
+
+        it 'does not modify the original content'
+      end # describe 'using source content as Markdown'
+    end # describe 'with a complete set of valid attributes'
+  end # describe 'when setting all attributes in the initialiser'
+
+  describe 'when using attribute setters' do
+  end # describe 'when using attribute setters'
 end
