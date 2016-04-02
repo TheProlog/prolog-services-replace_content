@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 require 'test_helper'
 
@@ -30,6 +31,53 @@ describe 'Prolog::Services::ReplaceContent' do
   end # describe 'initialisation'
 
   describe 'when setting all attributes in the initialiser' do
+    let(:obj) { described_class.new params }
+    let(:params) do
+      { content: content, endpoints: endpoints, replacement: replacement }
+    end
+    let(:endpoints) { (endpoint_begin..endpoint_end) }
+    let(:replacement) { 'replacement content' }
+    let(:content) { 'REDEFINE THIS CONTENT' }
+    let(:endpoint_begin) { 0 }
+    let(:endpoint_end) { -1 }
+
+    describe 'with a complete set of valid attributes' do
+      describe 'using source content as HTML' do
+        before { obj.convert }
+
+        let(:content) do
+          '<p>This is <em>source</em> material for the test.</p>'
+        end
+        let(:converted_content) do
+          '<p>This is replacement content for the test.</p>'
+        end
+        let(:endpoint_begin) { content.index '<em>source' }
+        let(:endpoint_end) { content.index ' for the test.' }
+
+        it 'is valid'
+
+        it 'has no errors'
+
+        it 'produces correct converted content' do
+          expect(obj.converted_content).must_equal converted_content
+        end
+
+        it 'does not modify the original content'
+      end # describe 'using source content as HTML'
+
+      describe 'using source content as Markdown' do
+        it 'is valid'
+
+        it 'has no errors'
+
+        it 'produces correct converted content'
+
+        it 'does not modify the original content'
+      end # describe 'using source content as Markdown'
+    end # describe 'with a complete set of valid attributes'
+  end # describe 'when setting all attributes in the initialiser'
+
+  describe 'when using attribute setters' do
     describe 'with a complete set of valid attributes' do
       describe 'using source content as HTML' do
         it 'is valid'
@@ -51,8 +99,5 @@ describe 'Prolog::Services::ReplaceContent' do
         it 'does not modify the original content'
       end # describe 'using source content as Markdown'
     end # describe 'with a complete set of valid attributes'
-  end # describe 'when setting all attributes in the initialiser'
-
-  describe 'when using attribute setters' do
   end # describe 'when using attribute setters'
 end

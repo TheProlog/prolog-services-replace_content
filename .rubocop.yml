@@ -31,6 +31,9 @@ Style/WordArray:
 
 # 'Real' settings follow. ###################################
 
+AllCops:
+  TargetRubyVersion: 2.3
+
 Metrics/AbcSize:
   Exclude:
     - test/prolog/use_cases/propose_edit_contribution_test.rb
