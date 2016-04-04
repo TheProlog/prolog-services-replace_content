@@ -11,24 +11,26 @@ require 'awesome_print'
 uses_cova = ENV['COVERALLS_REPO_TOKEN']
 uses_cc = ENV['CODECLIMATE_REPO_TOKEN']
 
+reporter_class = SimpleCov
+
+sc_formatters = [
+  SimpleCov::Formatter::HTMLFormatter
+]
+# formatter SimpleCov::Formatter::MultiFormatter[*sc_formatters]
+
 if uses_cc
   require 'codeclimate-test-reporter'
-  CodeClimate::TestReporter.start
+  reporter_class = CodeClimate::TestReporter
+  sc_formatters.unshift CodeClimate::TestReporter::Formatter
 end
 
-SimpleCov.start do
-  sc_formatters = [
-    SimpleCov::Formatter::HTMLFormatter
-  ]
-
+reporter_class.start do
   if uses_cova
     require 'coveralls'
     sc_formatters.unshift(Coveralls::SimpleCov::Formatter)
   end
 
-  sc_formatters.unshift(CodeClimate::TestReporter::Formatter) if uses_cc
   self.formatters = sc_formatters
-  # formatter SimpleCov::Formatter::MultiFormatter[*sc_formatters]
   Coveralls.wear! if uses_cova
 end
 
