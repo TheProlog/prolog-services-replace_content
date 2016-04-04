@@ -7,6 +7,7 @@ require 'simplecov'
 require 'minitest/spec'
 require 'minitest/autorun'
 require 'awesome_print'
+require 'semantic_logger'
 
 uses_cova = ENV['COVERALLS_REPO_TOKEN']
 uses_cc = ENV['CODECLIMATE_REPO_TOKEN']
@@ -37,6 +38,10 @@ end
 # if uses_cc
 #   CodeClimate.TestReporter.start
 # end
+
+require 'semantic_logger'
+SemanticLogger.default_level = :trace
+SemanticLogger.add_appender file_name: 'log/testing.log', formatter: :color
 
 require 'minitest/autorun' # harmless if already required
 require 'minitest/reporters'
