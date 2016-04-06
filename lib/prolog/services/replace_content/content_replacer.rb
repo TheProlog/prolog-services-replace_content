@@ -44,13 +44,18 @@ module Prolog
         #
         # rubocop:enable Metrics/LineLength
         def head
-          index = source.index marker.begin
+          marker_begin = marker.begin
+          index = source.index marker_begin
+          logger.trace 'In #head', index: index, source: source,
+                                   marker_begin: marker_begin
           source[0...index]
         end
 
         def tail
           end_marker = marker.end
           index = source.index(end_marker) + end_marker.length
+          logger.trace 'In #tail', index: index, source: source,
+                                   marker_end: end_marker
           source[index..-1]
         end
       end # class Prolog::Services::ReplaceContent::ContentReplacer
