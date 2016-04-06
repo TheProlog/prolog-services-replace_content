@@ -58,7 +58,6 @@ describe 'Prolog::Services::ReplaceContent' do
 
         it 'has no errors'
 
-        tag :focus
         it 'produces correct converted content' do
           expect(obj.converted_content).must_equal converted_content
         end
