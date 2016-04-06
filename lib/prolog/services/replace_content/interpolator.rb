@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'semantic_logger'
+
 require_relative 'range_splitter'
 
 module Prolog
@@ -21,6 +23,7 @@ module Prolog
           end
         end
         private_constant :Internals
+        include SemanticLogger::Loggable
 
         def initialize(content:, endpoints:, marker:)
           @splitter = Internals.build_splitter content, endpoints
@@ -29,7 +32,11 @@ module Prolog
         end
 
         def to_a
-          Internals.cleanup splitter.parts, markers
+          parts = splitter.parts
+          ret = Internals.cleanup parts, markers
+          logger.debug 'Interpolator#to_a', parts: parts, markers: markers,
+                                            ret: ret
+          ret
         end
 
         private

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'semantic_logger'
+
 module Prolog
   module Services
     # Replaces content within an HTML string based on endpoints and content.
@@ -21,15 +23,20 @@ module Prolog
           end
         end
         private_constant :Internals
+        include SemanticLogger::Loggable
 
         def initialize(content:, endpoints:)
+          logger.trace 'RangeSplitter#initialize', content: content,
+                                                   endpoints: endpoints
           @content = content.dup # content#clone will produce a frozen string
           @endpoints = endpoints
           self
         end
 
         def parts
-          [begin_part, middle_part, end_part]
+          ret = [begin_part, middle_part, end_part]
+          logger.trace 'RangeSplitter#parts', ret: ret
+          ret
         end
 
         private
