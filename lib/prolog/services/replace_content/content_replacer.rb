@@ -25,16 +25,33 @@ module Prolog
 
         attr_reader :marker, :source
 
+        # rubocop:disable Metrics/LineLength
+        #
+        # Why not just use
+        #   source.partition(marker.begin).first
+        # (and similar code for #tail) and be done with it? Because our CI
+        # server gives us a *weird* error with that code:
+        #
+        #   Minitest::Assertion: --- expected
+        #   +++ actual
+        #   @@ -1 +1 @@
+        #   -"<p>This is replacement content for the test.</p>"
+        #   +"<p>This is <em>source</em> material for the test.<br/>replacement content</p>"
+        #
+        # We've discovered some moving-part breakage along the way (see issue
+        # 3096 for docker/machine on GitHub), but those aren't the problem we're
+        # really trying to solve here. This is.
+        #
+        # rubocop:enable Metrics/LineLength
         def head
-          partition_at(marker.begin).first
-        end
-
-        def partition_at(index)
-          source.partition(index)
+          index = source.index marker.begin
+          source[0...index]
         end
 
         def tail
-          partition_at(marker.end).last
+          end_marker = marker.end
+          index = source.index(end_marker) + end_marker.length
+          source[index..-1]
         end
       end # class Prolog::Services::ReplaceContent::ContentReplacer
     end # class Prolog::Services::ReplaceContent
