@@ -1,4 +1,6 @@
 #!/bin/bash
+find ~/.cabal/bin/pandoc 2>&1 >/dev/null && exit 0
+# Not there; build it
 mkdir /tmp/$$
 pushd /tmp/$$
 wget https://github.com/jgm/pandoc/archive/1.17.0.3.tar.gz

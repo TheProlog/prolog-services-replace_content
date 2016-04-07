@@ -13,18 +13,20 @@ describe 'Pandoc basics' do
 
   describe 'converts empty anchor tag pairs with IDs to span tag pairs' do
     let(:html_content) do
-      content = %(<p>This is
-        <a id="contribution-27-begin"></a>
-        <a id="contribution-9-begin"></a>
-        obviously
-        <em>sample
-          <a id="contribution-27-end"></a>
-          and disposable
-        </em>
-        content.
-        <a id="contribution-9-end"></a>
-      </p>)
-      content.lines.map(&:strip).join
+      content = <<~ENDIT
+      <p>This is
+       <a id="contribution-27-begin"></a>
+      <a id="contribution-9-begin"></a>
+      obviously
+       <em>sample
+       <a id="contribution-27-end"></a>
+       and disposable
+      </em>
+       content.
+      <a id="contribution-9-end"></a>
+      </p>
+      ENDIT
+      content.lines.map(&:chomp).join
     end
     let(:markdown) do
       PandocRuby.convert(html_content, from: :html, to: :markdown_github)
@@ -38,13 +40,14 @@ describe 'Pandoc basics' do
       expect(converted_html).wont_equal html_content
     end
 
+    tag :focus
     # Changed sometime between Pandoc 1.15.1 and 1.17.0.3.
     it 'adds empty :href attributes to empty :a tags' do
       fiddled = html_content.gsub('<a id', '<a href="" id')
-      @logger.trace 'replace :a with :span', fiddled: fiddled,
-                                             markdown: markdown,
-                                             html_content: html_content,
-                                             converted_html: converted_html
+      @logger.trace 'adds empth :href attribute', fiddled: fiddled,
+                                                  markdown: markdown,
+                                                  html_content: html_content,
+                                                  converted_html: converted_html
       expect(converted_html).must_equal fiddled
     end
   end # describe 'converts empty anchor tag pairs with IDs to span tag pairs'
