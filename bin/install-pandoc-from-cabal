@@ -1,0 +1,12 @@
+#!/bin/bash
+mkdir /tmp/$$
+pushd /tmp/$$
+wget https://github.com/jgm/pandoc/archive/1.17.0.3.tar.gz
+mv 1.17.0.3.tar.gz pandoc-1.17.0.3.tar.gz
+tar zxf pandoc-1.17.0.3.tar.gz
+rm pandoc-1.17.0.3.tar.gz
+cabal update
+cabal install --user pandoc regex-posix regex-compat
+export PATH=~/.cabal/bin:$PATH
+echo Leaving `pwd`
+popd
