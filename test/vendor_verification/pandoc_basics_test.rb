@@ -1,10 +1,16 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'semantic_logger'
 
 require 'pandoc-ruby'
 
 describe 'Pandoc basics' do
+  before do
+    SemanticLogger.default_level = :trace
+    @logger = SemanticLogger['PandocBasics']
+  end
+
   describe 'converts empty anchor tag pairs with IDs to span tag pairs' do
     let(:html_content) do
       content = %(<p>This is
@@ -32,9 +38,14 @@ describe 'Pandoc basics' do
       expect(converted_html).wont_equal html_content
     end
 
-    it 'replaces empty :a tags with :span tags' do
-      fiddled = html_content.gsub('<a id', '<span id').gsub('</a>', '</span>')
-      expect(fiddled).must_equal converted_html
+    # Changed sometime between Pandoc 1.15.1 and 1.17.0.3.
+    it 'adds empty :href attributes to empty :a tags' do
+      fiddled = html_content.gsub('<a id', '<a href="" id')
+      @logger.trace 'replace :a with :span', fiddled: fiddled,
+                                             markdown: markdown,
+                                             html_content: html_content,
+                                             converted_html: converted_html
+      expect(converted_html).must_equal fiddled
     end
   end # describe 'converts empty anchor tag pairs with IDs to span tag pairs'
 
