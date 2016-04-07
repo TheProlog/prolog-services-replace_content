@@ -5,6 +5,7 @@ require 'semantic_logger'
 
 require 'pandoc-ruby'
 
+tag :focus
 describe 'Pandoc basics' do
   before do
     SemanticLogger.default_level = :trace
@@ -40,11 +41,10 @@ describe 'Pandoc basics' do
       expect(converted_html).wont_equal html_content
     end
 
-    tag :focus
     # Changed sometime between Pandoc 1.15.1 and 1.17.0.3.
     it 'adds empty :href attributes to empty :a tags' do
       fiddled = html_content.gsub('<a id', '<a href="" id')
-      @logger.trace 'adds empth :href attribute', fiddled: fiddled,
+      @logger.trace 'adds empty :href attribute', fiddled: fiddled,
                                                   markdown: markdown,
                                                   html_content: html_content,
                                                   converted_html: converted_html
