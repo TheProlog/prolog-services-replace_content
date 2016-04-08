@@ -5,13 +5,13 @@ require 'semantic_logger'
 
 require 'pandoc-ruby'
 
-tag :focus
 describe 'Pandoc basics' do
   before do
     SemanticLogger.default_level = :trace
     @logger = SemanticLogger['PandocBasics']
   end
 
+  tag :focus
   describe 'converts empty anchor tag pairs with IDs to span tag pairs' do
     let(:html_content) do
       content = <<~ENDIT
@@ -52,6 +52,7 @@ describe 'Pandoc basics' do
     end
   end # describe 'converts empty anchor tag pairs with IDs to span tag pairs'
 
+  tag :focus
   describe 'correctly handles Markdown with embedded HTML tag pairs' do
     describe 'when converting the lot to HTML' do
       let(:mixed_source) do
