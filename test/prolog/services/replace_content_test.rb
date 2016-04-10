@@ -38,18 +38,18 @@ describe 'Prolog::Services::ReplaceContent' do
     let(:endpoints) { (endpoint_begin...endpoint_end) }
     let(:replacement) { 'replacement content' }
     let(:content) { 'REDEFINE THIS CONTENT' }
+    let(:converted_content) do
+      '<p>This is replacement content for the test.</p>'
+    end
     let(:endpoint_begin) { 0 }
     let(:endpoint_end) { -1 }
 
     describe 'with a complete set of valid attributes' do
-      describe 'using source content as HTML' do
-        before { obj.convert }
+      before { obj.convert }
 
+      describe 'using source content as HTML' do
         let(:content) do
           '<p>This is <em>source</em> material for the test.</p>'
-        end
-        let(:converted_content) do
-          '<p>This is replacement content for the test.</p>'
         end
         let(:endpoint_begin) { content.index '<em>source' }
         let(:endpoint_end) { content.index ' for the test.' }
@@ -72,13 +72,25 @@ describe 'Prolog::Services::ReplaceContent' do
       end # describe 'using source content as HTML'
 
       describe 'using source content as Markdown' do
-        it 'is valid'
+        let(:content) { 'This is *source* material for the test.' }
+        let(:endpoint_begin) { content.index '*source' }
+        let(:endpoint_end) { content.index ' for the test.' }
 
-        it 'has no errors'
+        it 'is valid' do
+          expect(obj).must_be :valid?
+        end
 
-        it 'produces correct converted content'
+        it 'has no errors' do
+          expect(obj.errors).must_be :empty?
+        end
 
-        it 'does not modify the original content'
+        it 'produces correct converted content' do
+          expect(obj.converted_content).must_equal converted_content
+        end
+
+        it 'does not modify the original content' do
+          expect(obj.content).must_equal content
+        end
       end # describe 'using source content as Markdown'
     end # describe 'with a complete set of valid attributes'
   end # describe 'when setting all attributes in the initialiser'
