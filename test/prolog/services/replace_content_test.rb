@@ -35,7 +35,7 @@ describe 'Prolog::Services::ReplaceContent' do
     let(:params) do
       { content: content, endpoints: endpoints, replacement: replacement }
     end
-    let(:endpoints) { (endpoint_begin..endpoint_end) }
+    let(:endpoints) { (endpoint_begin...endpoint_end) }
     let(:replacement) { 'replacement content' }
     let(:content) { 'REDEFINE THIS CONTENT' }
     let(:endpoint_begin) { 0 }
@@ -54,15 +54,21 @@ describe 'Prolog::Services::ReplaceContent' do
         let(:endpoint_begin) { content.index '<em>source' }
         let(:endpoint_end) { content.index ' for the test.' }
 
-        it 'is valid'
+        it 'is valid' do
+          expect(obj).must_be :valid?
+        end
 
-        it 'has no errors'
+        it 'has no errors' do
+          expect(obj.errors).must_be :empty?
+        end
 
         it 'produces correct converted content' do
           expect(obj.converted_content).must_equal converted_content
         end
 
-        it 'does not modify the original content'
+        it 'does not modify the original content' do
+          expect(obj.content).must_equal content
+        end
       end # describe 'using source content as HTML'
 
       describe 'using source content as Markdown' do
