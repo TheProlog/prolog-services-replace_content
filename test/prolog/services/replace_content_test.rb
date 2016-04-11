@@ -96,13 +96,53 @@ describe 'Prolog::Services::ReplaceContent' do
   end # describe 'when setting all attributes in the initialiser'
 
   describe 'when using attribute setters' do
+    let(:obj) { described_class.new }
+
     describe 'with a complete set of valid attributes' do
       describe 'using source content as HTML' do
+        let(:content) { '<ul><li>First</li><li>Second</li></ul>' }
+        let(:converted_content) { '<ul><li>First</li><li>Last</li></ul>' }
+        let(:replacement) { 'Last' }
+        let(:endpoints) { (endpoint_begin...endpoint_end) }
+        let(:endpoint_begin) { content.index 'Second' }
+        let(:endpoint_end) { content.index '</li></ul>' }
+
         it 'is valid'
 
         it 'has no errors'
 
-        it 'produces correct converted content'
+        it 'produces correct converted content' do
+          logger = SemanticLogger['converted content spec']
+          obj = described_class.new
+          logger.trace 'new object', obj: obj, content: obj.content,
+                                     endpoints: obj.endpoints,
+                                     replacement: obj.replacement,
+                                     converted_content: obj.converted_content
+          obj = described_class.set_content obj, content
+          logger.trace 'with content', obj: obj, content: obj.content,
+                                       endpoints: obj.endpoints,
+                                       replacement: obj.replacement,
+                                       converted_content: obj.converted_content,
+                                       new_endpoints: endpoints
+          obj = described_class.set_endpoints obj, endpoints
+          occ = obj.converted_content
+          logger.trace 'with endpoints', obj: obj, content: obj.content,
+                                         endpoints: obj.endpoints,
+                                         replacement: obj.replacement,
+                                         converted_content: occ
+          obj = described_class.set_replacement obj, replacement
+          logger.trace 'before convert', obj: obj, content: obj.content,
+                                         endpoints: obj.endpoints,
+                                         replacement: obj.replacement,
+                                         converted_content:
+                                           obj.converted_content
+          obj.convert
+          logger.trace 'after convert', obj: obj, content: obj.content,
+                                        endpoints: obj.endpoints,
+                                        replacement: obj.replacement,
+                                        converted_content: obj.converted_content
+          expect(obj.converted_content).must_equal converted_content
+        end
 
         it 'does not modify the original content'
       end # describe 'using source content as HTML'
