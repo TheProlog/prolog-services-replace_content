@@ -16,6 +16,8 @@ module Prolog
         def self.cleanup_lists_after_pandoc(html)
           ret = html.gsub(/l>\s/, 'l>')
           ret.gsub!(/li>\s/, 'li>')
+          # Oddly, Linux Pandoc inserts a break at end of first list item.
+          ret.gsub!(%r{<br \/><\/li>}, '</li>')
           ret
         end
 
@@ -57,19 +59,17 @@ module Prolog
         middle = content[endpoints]
         marker = 'zqxzqxzqx'
         inner = [marker, marker].join middle
-        logger.trace 'line 54', parts: parts, inner: inner
+        logger.trace 'parts and inner', parts: parts, inner: inner
         markdown = PandocRuby.convert parts.join(inner), from: :html,
                                                          to: :markdown_github
-        # html = PandocRuby.convert markdown.sub(inner, replacement),
-        #                           from: :markdown_github,
-        #                           to: :html
-        logger.trace 'line 60', markdown: markdown
+        logger.trace 'markdown built via PandocRuby', markdown: markdown
         html = PandocRuby.convert(markdown, from: :markdown_github,
                                             to: :html).chomp
         # Pandoc leaves newlines on list items and `<ul>` opening and closing
         # tags when it converts; we can safely strip those
+        logger.trace 'Before cleaning up', html: html
         html = Internals.cleanup_lists_after_pandoc(html)
-        logger.trace 'line 66', html: html
+        logger.trace 'HTML built via PandocRuby', html: html
         @content_after_conversion = html.sub(inner, replacement)
         logger.trace 'Leaving #convert',
                      content_after_conversion: @content_after_conversion
