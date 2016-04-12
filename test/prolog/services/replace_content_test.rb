@@ -96,41 +96,69 @@ describe 'Prolog::Services::ReplaceContent' do
   end # describe 'when setting all attributes in the initialiser'
 
   describe 'when using attribute setters' do
-    let(:obj) { described_class.new }
+    let(:obj) do
+      described_class.set_content(
+        described_class.set_endpoints(
+          described_class.set_replacement(described_class.new, replacement),
+          endpoints),
+        content)
+    end
+    let(:converted_content) { '<ul><li>First</li><li>Last</li></ul>' }
+    let(:replacement) { 'Last' }
+
+    before { obj.convert }
 
     describe 'with a complete set of valid attributes' do
+      let(:endpoints) { (endpoint_begin...endpoint_end) }
+
       describe 'using source content as HTML' do
         let(:content) { '<ul><li>First</li><li>Second</li></ul>' }
-        let(:converted_content) { '<ul><li>First</li><li>Last</li></ul>' }
-        let(:replacement) { 'Last' }
-        let(:endpoints) { (endpoint_begin...endpoint_end) }
         let(:endpoint_begin) { content.index 'Second' }
         let(:endpoint_end) { content.index '</li></ul>' }
 
-        it 'is valid'
+        it 'is valid' do
+          expect(obj).must_be :valid?
+        end
 
-        it 'has no errors'
+        it 'has no errors' do
+          expect(obj.errors).must_be :empty?
+        end
 
         it 'produces correct converted content' do
-          obj = described_class.new
-          obj = described_class.set_content obj, content
-          obj = described_class.set_endpoints obj, endpoints
-          obj = described_class.set_replacement obj, replacement
-          obj.convert
           expect(obj.converted_content).must_equal converted_content
         end
 
-        it 'does not modify the original content'
+        it 'does not modify the original content' do
+          expect(obj.content).must_equal content
+        end
       end # describe 'using source content as HTML'
 
       describe 'using source content as Markdown' do
-        it 'is valid'
+        let(:content) do
+          <<~ENDIT
+          - First
+          - Second
+          ENDIT
+        end
+        let(:endpoints) { (endpoint_begin...endpoint_end) }
+        let(:endpoint_begin) { content.index 'Second' }
+        let(:endpoint_end) { -1 }
 
-        it 'has no errors'
+        it 'is valid' do
+          expect(obj).must_be :valid?
+        end
 
-        it 'produces correct converted content'
+        it 'has no errors' do
+          expect(obj.errors).must_be :empty?
+        end
 
-        it 'does not modify the original content'
+        it 'produces correct converted content' do
+          expect(obj.converted_content).must_equal converted_content
+        end
+
+        it 'does not modify the original content' do
+          expect(obj.content).must_equal content
+        end
       end # describe 'using source content as Markdown'
     end # describe 'with a complete set of valid attributes'
   end # describe 'when using attribute setters'

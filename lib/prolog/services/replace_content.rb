@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'ox'
 require 'pandoc-ruby'
 # require 'semantic_logger'
 
@@ -21,12 +22,11 @@ module Prolog
           ret
         end
 
-        def self.to_html(content)
-          Prolog::Services::MarkdownToHtml.call content: content
-        end
-
-        def self.to_markdown(content)
-          PandocRuby.new(content, from: :html, to: :markdown_github).to_s
+        def self.html?(source)
+          Ox.parse source
+          return true
+        rescue Ox::ParseError
+          false
         end
       end
       private_constant :Internals
@@ -53,14 +53,21 @@ module Prolog
         middle = content[endpoints]
         marker = 'zqxzqxzqx'
         inner = [marker, marker].join middle
-        markdown = PandocRuby.convert parts.join(inner), from: :html,
-                                                         to: :markdown_github
-        html = PandocRuby.convert(markdown, from: :markdown_github,
-                                            to: :html).chomp
-        # Pandoc leaves newlines on list items and `<ul>` opening and closing
-        # tags when it converts; we can safely strip those
+        source = parts.join(inner)
+        if Internals.html?(source)
+          html = Internals.cleanup_lists_after_pandoc(source)
+          html.sub!(inner, replacement)
+        else
+          markdown = source + "\n"
+          markdown.sub!(inner, replacement)
+          html = PandocRuby.convert(markdown, from: :markdown_github,
+                                              to: :html).chomp
+        end
+        # Pandoc sometimes leaves newlines on list items and `<ul>` opening and
+        # closing tags when it converts Markdown to Ruby; we can safely strip
+        # hose.
         html = Internals.cleanup_lists_after_pandoc(html)
-        @content_after_conversion = html.sub(inner, replacement)
+        @content_after_conversion = html
         true
       end
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
