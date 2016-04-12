@@ -3,6 +3,7 @@ set -euo pipefail
 IFS=$'\n\t'
 set -vx
 
+gem install nokogiri -- --use-system-libraries --with-xml2-config=/usr/bin/xml2-config --with-xslt-config=/usr/bin/xslt-config
+gem install bundler flay flog reek rubocop pry-byebug simplecov awesome_print codeclimate-test-reporter minitest-matchers minitest-reporters minitest-tagz pandoc-ruby prolog-services-markdown_to_html semantic_logger
+bundle config build.nokogiri --use-system-libraries
 bundle install
-
-# Do any other automated setup that you need to do here
