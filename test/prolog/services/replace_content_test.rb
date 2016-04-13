@@ -171,6 +171,22 @@ describe 'Prolog::Services::ReplaceContent' do
       it 'has #convert returning false' do
         expect(obj.convert).must_equal false
       end
+
+      it 'is invalid' do
+        obj.convert
+        expect(obj).wont_be :valid?
+      end
+
+      it 'indicates an error when calling #converted_content' do
+        obj.convert
+        expect(obj.converted_content).must_equal :oops
+      end
+
+      it 'returns the correct error data from #errors' do
+        obj.convert
+        expected = { content: ['invalid'] }
+        expect(obj.errors).must_equal expected
+      end
     end # describe 'invalid enpoints (yielding invalid markup)'
   end # describe 'detects errors correctly, including'
 end
