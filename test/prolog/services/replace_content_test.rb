@@ -6,6 +6,10 @@ require 'prolog/services/replace_content'
 
 describe 'Prolog::Services::ReplaceContent' do
   let(:described_class) { Prolog::Services::ReplaceContent }
+  let(:obj) { described_class.new params }
+  let(:params) do
+    { content: content, endpoints: endpoints, replacement: replacement }
+  end
 
   it 'has a version number in SemVer format' do
     actual = Prolog::Services::ReplaceContent::VERSION
@@ -14,27 +18,22 @@ describe 'Prolog::Services::ReplaceContent' do
 
   describe 'initialisation' do
     it 'succeeds without specified parameters' do
-      expect { described_class.new }.must_be_silent
+      expect(described_class.new).must_be_instance_of described_class
     end
 
     describe 'accepts parameters for' do
-      let(:dummy) { Object.new }
+      let(:the_method) { described_class.new.method :initialize }
 
       [:content, :endpoints, :replacement].each do |attrib|
         it ":#{attrib}" do
-          params = {}
-          params[attrib] = dummy
-          expect { described_class.new params }.must_be_silent
+          params = [:key, attrib]
+          expect(the_method.parameters).must_include params
         end
       end
     end # describe 'accepts parameters for'
   end # describe 'initialisation'
 
   describe 'when setting all attributes in the initialiser' do
-    let(:obj) { described_class.new params }
-    let(:params) do
-      { content: content, endpoints: endpoints, replacement: replacement }
-    end
     let(:endpoints) { (endpoint_begin...endpoint_end) }
     let(:replacement) { 'replacement content' }
     let(:content) { 'REDEFINE THIS CONTENT' }
@@ -162,4 +161,16 @@ describe 'Prolog::Services::ReplaceContent' do
       end # describe 'using source content as Markdown'
     end # describe 'with a complete set of valid attributes'
   end # describe 'when using attribute setters'
+
+  describe 'detects errors correctly, including' do
+    describe 'invalid initial content' do
+      let(:content) { '<p>This is a <em>simple</strong> test.</p>' }
+      let(:endpoints) { (17...23) }
+      let(:replacement) { 'basic' }
+
+      it 'has #convert returning false' do
+        expect(obj.convert).must_equal false
+      end
+    end # describe 'invalid enpoints (yielding invalid markup)'
+  end # describe 'detects errors correctly, including'
 end

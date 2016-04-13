@@ -7,18 +7,22 @@ require 'prolog/services/replace_content/version'
 module Prolog
   module Services
     # Replaces content within an HTML string based on endpoints and content.
+    # FIXME: Reek thinks this has :reek:TooManyInstanceVariables; cleanup soonn.
     class ReplaceContent
-      attr_reader :content, :endpoints, :replacement
+      attr_reader :content, :endpoints, :errors, :replacement
 
       def initialize(content: '', endpoints: (-1..-1), replacement: '')
         @content = content
         @endpoints = endpoints
         @replacement = replacement
         @content_after_conversion = nil
+        @errors = {}
+        validate_initial_content
         self
       end
 
       def convert
+        return false unless valid?
         @content_after_conversion = Converter.convert(splitter, replacement)
         true
       end
@@ -28,12 +32,8 @@ module Prolog
         @content_after_conversion || :oops
       end
 
-      def errors
-        {}
-      end
-
       def valid?
-        true
+        errors.empty?
       end
 
       def self.set_content(obj, content)
@@ -55,6 +55,25 @@ module Prolog
 
       def splitter
         ContentSplitter.new content: content, endpoints: endpoints
+      end
+
+      # FIXME: Reek says :reek:TooManyStatements. It's right.
+      def validate_initial_content
+        html = PandocRuby.convert @content, from: :markdown_github, to: :html
+        parsed = Ox.parse html
+        md = PandocRuby.convert html, from: :html, to: :markdown_github
+        new_html = PandocRuby.convert md, from: :markdown_github, to: :html
+        # FIXME: For this test to fail, the "new HTML" would have to differ from
+        # the originally-converted HTML in its child nodes (strings or child
+        # elements). We can't envision how that would happen in practice; should
+        # the test even be here? The real purpose of this is to ensure that the
+        # initial content can be parsed by Ox at all.
+        return self if parsed == Ox.parse(new_html)
+        errors[:content] = ['not reconvertible']
+      rescue Ox::ParseError # from `parsed`
+        errors[:content] = ['invalid']
+      ensure
+        self
       end
     end # class Prolog::Services::ReplaceContent
   end
