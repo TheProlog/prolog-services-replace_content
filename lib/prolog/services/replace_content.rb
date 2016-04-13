@@ -37,21 +37,18 @@ module Prolog
       end
 
       def self.set_content(obj, content)
-        endpoints = obj.endpoints
-        replacement = obj.replacement
-        new content: content, endpoints: endpoints, replacement: replacement
+        new endpoints: obj.endpoints, replacement: obj.replacement,
+            content: content
       end
 
       def self.set_endpoints(obj, endpoints)
-        content = obj.content
-        replacement = obj.replacement
-        new content: content, endpoints: endpoints, replacement: replacement
+        new content: obj.content, replacement: obj.replacement,
+            endpoints: endpoints
       end
 
       def self.set_replacement(obj, replacement)
-        content = obj.content
-        endpoints = obj.endpoints
-        new content: content, endpoints: endpoints, replacement: replacement
+        new content: obj.content, endpoints: obj.endpoints,
+            replacement: replacement
       end
 
       private
