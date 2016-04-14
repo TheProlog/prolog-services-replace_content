@@ -17,11 +17,11 @@ module Prolog
         @replacement = replacement
         @content_after_conversion = nil
         @errors = {}
-        validate_initial_content
         self
       end
 
       def convert
+        validate
         return false unless valid?
         @content_after_conversion = Converter.convert(splitter, replacement)
         true
@@ -53,12 +53,24 @@ module Prolog
 
       private
 
-      def splitter
-        ContentSplitter.new content: content, endpoints: endpoints
+      def parse_with_comments
+        comment = '<!-- -->'
+        twiddled = splitter(comment).source
+        html = PandocRuby.convert twiddled, from: :markdown_github, to: :html
+        Ox.parse html # raises on most errors
+      end
+
+      def splitter(marker = ContentSplitter::DEFAULT_MARKER)
+        ContentSplitter.new content: content, endpoints: endpoints,
+                            marker: marker
+      end
+
+      def validate
+        validate_content && validate_endpoints
       end
 
       # FIXME: Reek says :reek:TooManyStatements. It's right.
-      def validate_initial_content
+      def validate_content
         html = PandocRuby.convert @content, from: :markdown_github, to: :html
         parsed = Ox.parse html
         md = PandocRuby.convert html, from: :html, to: :markdown_github
@@ -68,12 +80,20 @@ module Prolog
         # elements). We can't envision how that would happen in practice; should
         # the test even be here? The real purpose of this is to ensure that the
         # initial content can be parsed by Ox at all.
-        return self if parsed == Ox.parse(new_html)
+        return true if parsed == Ox.parse(new_html)
         errors[:content] = ['not reconvertible']
+        false
       rescue Ox::ParseError # from `parsed`
         errors[:content] = ['invalid']
-      ensure
-        self
+        false
+      end
+
+      def validate_endpoints
+        parse_with_comments
+        true
+      rescue Ox::ParseError
+        errors[:endpoints] = ['invalid']
+        false
       end
     end # class Prolog::Services::ReplaceContent
   end

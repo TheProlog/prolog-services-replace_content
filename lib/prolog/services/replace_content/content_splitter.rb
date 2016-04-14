@@ -8,12 +8,13 @@ module Prolog
       # The whole justification for this class is to build the readable
       # attributes.
       class ContentSplitter
+        DEFAULT_MARKER = 'zqxzqxzqx'
+
         attr_reader :inner, :source
 
         # Methods neither affecting nor affected by instance state.
         module Internals
-          def self.build_inner(content, endpoints)
-            marker = 'zqxzqxzqx'
+          def self.build_inner(content, endpoints, marker)
             [marker, marker].join content[endpoints]
           end
         end
@@ -29,8 +30,8 @@ module Prolog
           end
         end # class Prolog::Services::ReplaceContent::ContentSplitter::Parts
 
-        def initialize(content:, endpoints:)
-          @inner = Internals.build_inner(content, endpoints)
+        def initialize(content:, endpoints:, marker: DEFAULT_MARKER)
+          @inner = Internals.build_inner(content, endpoints, marker)
           @source = rebuild_source(content, endpoints)
           self
         end

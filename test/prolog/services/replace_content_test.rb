@@ -188,5 +188,27 @@ describe 'Prolog::Services::ReplaceContent' do
         expect(obj.errors).must_equal expected
       end
     end # describe 'invalid enpoints (yielding invalid markup)'
+
+    describe 'invalid endpoints (invalidating content as HTML)' do
+      let(:content) { '<p>This is a <em>simple</em> test.</p>' }
+      let(:endpoints) { (15...23) }
+      let(:replacement) { 'basic' }
+
+      it 'is invalid' do
+        obj.convert
+        expect(obj).wont_be :valid?
+      end
+
+      it 'indicates an error when calling #converted_content' do
+        obj.convert
+        expect(obj.converted_content).must_equal :oops
+      end
+
+      it 'returns the correct error data from #errors' do
+        obj.convert
+        expected = { endpoints: ['invalid'] }
+        expect(obj.errors).must_equal expected
+      end
+    end # describe 'invalid endpoints (invalidating content as HTML)'
   end # describe 'detects errors correctly, including'
 end
