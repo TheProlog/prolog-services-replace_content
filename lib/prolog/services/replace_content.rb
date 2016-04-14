@@ -9,6 +9,18 @@ module Prolog
     # Replaces content within an HTML string based on endpoints and content.
     # FIXME: Reek thinks this has :reek:TooManyInstanceVariables; cleanup soonn.
     class ReplaceContent
+      # Methods that neither affect nor are affected by instance state.
+      module Internals
+        def self.markdown_from_html(html)
+          PandocRuby.convert html, from: :html, to: :markdown_github
+        end
+
+        def self.parse_as_html(markdown)
+          PandocRuby.convert markdown, from: :markdown_github, to: :html
+        end
+      end
+      private_constant :Internals
+
       attr_reader :content, :endpoints, :errors, :replacement
 
       def initialize(content: '', endpoints: (-1..-1), replacement: '')
@@ -53,6 +65,12 @@ module Prolog
 
       private
 
+      def content_reconvertible?
+        html = Internals.parse_as_html @content
+        new_html = Internals.parse_as_html Internals.markdown_from_html(html)
+        Ox.parse(html) == Ox.parse(new_html)
+      end
+
       def parse_with_comments
         comment = '<!-- -->'
         twiddled = splitter(comment).source
@@ -71,19 +89,8 @@ module Prolog
 
       # FIXME: Reek says :reek:TooManyStatements. It's right.
       def validate_content
-        html = PandocRuby.convert @content, from: :markdown_github, to: :html
-        parsed = Ox.parse html
-        md = PandocRuby.convert html, from: :html, to: :markdown_github
-        new_html = PandocRuby.convert md, from: :markdown_github, to: :html
-        # FIXME: For this test to fail, the "new HTML" would have to differ from
-        # the originally-converted HTML in its child nodes (strings or child
-        # elements). We can't envision how that would happen in practice; should
-        # the test even be here? The real purpose of this is to ensure that the
-        # initial content can be parsed by Ox at all.
-        return true if parsed == Ox.parse(new_html)
-        errors[:content] = ['not reconvertible']
-        false
-      rescue Ox::ParseError # from `parsed`
+        content_reconvertible?
+      rescue Ox::ParseError
         errors[:content] = ['invalid']
         false
       end
