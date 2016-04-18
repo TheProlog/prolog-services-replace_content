@@ -164,5 +164,17 @@ describe 'Prolog::Services::ReplaceContent' do
         expect(obj.errors).must_equal expected
       end
     end # describe 'invalid endpoints (invalidating content as HTML)'
+
+    describe 'replacing content as specified produces invalid HTML' do
+      let(:content) { '<ul><li>First item</li><li>Second item</li></ul>' }
+      let(:endpoints) { (ep_begin...ep_end) }
+      let(:ep_begin) { content.index 'Second' }
+      let(:ep_end) { content.index '</ul>' }
+      let(:replacement) { 'basic' }
+
+      it 'has #convert returning false' do
+        expect(obj.convert).must_equal false
+      end
+    end # describe 'replacing content as specified produces invalid HTML'
   end # describe 'detects errors correctly, including'
 end
