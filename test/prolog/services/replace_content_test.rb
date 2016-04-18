@@ -70,27 +70,7 @@ describe 'Prolog::Services::ReplaceContent' do
         end
       end # describe 'using source content as HTML'
 
-      describe 'using source content as Markdown' do
-        let(:content) { 'This is *source* material for the test.' }
-        let(:endpoint_begin) { content.index '*source' }
-        let(:endpoint_end) { content.index ' for the test.' }
-
-        it 'is valid' do
-          expect(obj).must_be :valid?
-        end
-
-        it 'has no errors' do
-          expect(obj.errors).must_be :empty?
-        end
-
-        it 'produces correct converted content' do
-          expect(obj.converted_content).must_equal converted_content
-        end
-
-        it 'does not modify the original content' do
-          expect(obj.content).must_equal content
-        end
-      end # describe 'using source content as Markdown'
+      # FUTURE: describe 'using source content as Markdown'
     end # describe 'with a complete set of valid attributes'
   end # describe 'when setting all attributes in the initialiser'
 
@@ -132,33 +112,7 @@ describe 'Prolog::Services::ReplaceContent' do
         end
       end # describe 'using source content as HTML'
 
-      describe 'using source content as Markdown' do
-        let(:content) do
-          <<~ENDIT
-          - First
-          - Second
-          ENDIT
-        end
-        let(:endpoints) { (endpoint_begin...endpoint_end) }
-        let(:endpoint_begin) { content.index 'Second' }
-        let(:endpoint_end) { -1 }
-
-        it 'is valid' do
-          expect(obj).must_be :valid?
-        end
-
-        it 'has no errors' do
-          expect(obj.errors).must_be :empty?
-        end
-
-        it 'produces correct converted content' do
-          expect(obj.converted_content).must_equal converted_content
-        end
-
-        it 'does not modify the original content' do
-          expect(obj.content).must_equal content
-        end
-      end # describe 'using source content as Markdown'
+      # FUTURE: describe 'using source content as Markdown'
     end # describe 'with a complete set of valid attributes'
   end # describe 'when using attribute setters'
 
