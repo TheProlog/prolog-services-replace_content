@@ -8,7 +8,7 @@ module Prolog
       # The whole justification for this class is to build the readable
       # attributes.
       class ContentSplitter
-        DEFAULT_MARKER = 'zqxzqxzqx'
+        DEFAULT_MARKER = ''
 
         attr_reader :inner, :source
 

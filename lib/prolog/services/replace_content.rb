@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
+require 'ox'
+
 require 'prolog/services/replace_content/content_splitter'
-require 'prolog/services/replace_content/converter'
 require 'prolog/services/replace_content/version'
 
 module Prolog
@@ -23,8 +24,8 @@ module Prolog
       def convert
         validate
         return false unless valid?
-        @content_after_conversion = Converter.convert(splitter, replacement)
-        true
+        set_converted_content
+        valid?
       end
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
@@ -53,6 +54,20 @@ module Prolog
 
       private
 
+      def build_converted_content
+        replace_inner_content_in splitter.source
+      end
+
+      def replace_inner_content_in(markup)
+        markup.sub(splitter.inner, replacement)
+      end
+
+      def set_converted_content
+        html = build_converted_content
+        @content_after_conversion = html if validate_markup(html, :replacement)
+        @content_after_conversion
+      end
+
       def parse_with_comments
         comment = '<!-- -->'
         twiddled = splitter(comment).source
@@ -68,11 +83,15 @@ module Prolog
         validate_content && validate_endpoints
       end
 
-      # FIXME: Reek says :reek:TooManyStatements. It's right.
       def validate_content
-        Ox.parse @content
+        validate_markup @content, :content
+      end
+
+      def validate_markup(markup, error_key)
+        Ox.parse markup
+        true
       rescue Ox::ParseError
-        errors[:content] = ['invalid']
+        errors[error_key] = ['invalid']
         false
       end
 
