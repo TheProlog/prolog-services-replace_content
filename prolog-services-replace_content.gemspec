@@ -28,10 +28,10 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'pandoc-ruby', '~> 2'
-  spec.add_dependency 'prolog-services-markdown_to_html', '~> 1.0'
+  # spec.add_dependency 'pandoc-ruby', '~> 2'
+  # spec.add_dependency 'prolog-services-markdown_to_html', '~> 1.0'
   spec.add_dependency 'semantic_logger', '~> 3.2'
-  # spec.add_dependency 'ox', '~> 2.3'
+  spec.add_dependency 'ox', '~> 2.3'
 
   spec.add_development_dependency 'bundler', '~> 1.11'
   spec.add_development_dependency 'rake', '~> 11'
