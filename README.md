@@ -5,7 +5,11 @@
 
 This Gem was extracted from an internally-developed application, which should somewhat explain the namespacing.
 
-The Gem provides an (extremely) simple API for replacing a substring of "existing" HTML content, specified by zero-based endpoint indexes, with valid Markdown content, which may be partly or completely comprised of embedded HTML. Detailed API usage is documented below.
+The Gem provides an (extremely) simple API for replacing a substring of "existing" HTML content, specified by zero-based endpoint indexes, with valid HTML content, which may be partly or completely comprised of embedded HTML. Detailed API usage is documented below.
+
+**Important:** The initial release of this Gem *only* supports HTML for source and replacement content; no Markdown content is supported. This means that, for example,. specifying a simple string with­out tags as replacement content will attempt to replace the selected range with *just that text*; if that causes the resulting HTML to be invalid, it will be reported as an error.
+
+A future release of this Gem is expected to support specification of source and/or replacement content in *either* HTML or Markdown (which, remember, is a proper superset of HTML). The tools presently available for supporting this, however, are presently stumped by several corner cases we have devised that are likely enough to occur "in the wild" to be of serious concern.
 
 ## Installation
 
@@ -57,20 +61,6 @@ converter.converted_content
 # => '<p>This is a <a id="selection-begin"></a>basic<a id="selection-end"></a> test.</p>'
 converter.errors.empty? # => true
 converter.valid? # => true
-
-# The same setup, only using Markdown input instead of HTML
-
-content = 'This is a *simple* test.'
-endpoint_begin = content.index '*simple*'
-endpoint_end = content.index ' test.' # same as earlier
-endpoints = (endpoint_begin..endpoint_end)
-converter = Prolog::Services::ReplaceContent.new(content: content,
-                                                 endpoints: endpoints,
-                                                 replacement: 'basic' )
-
-converter.convert # => true
-converter.converted_content # => '<p>Tis is a basic test.</p>'
-
 
 # Conversion inserting marker tag pairs (tag symbol required; text optional)
 
@@ -137,11 +127,11 @@ Creates an instance of the converter class, populating the `#content`, `#endpoin
 
 #### `#content`
 
-The string specified as *source content* for the conversion, as either HTML or Markdown depending on which was originally used to specify the content (either from the initialiser or the `#content=` method).
+The HTML content specified as *source content* for the conversion, as specified either from the initialiser or the `#content=` method. Is guaranteed to return either an empty string or valid HTML.
 
 #### `#content=(str)`
 
-Specifies *source content*, either as HTML or Markdown, that will be used for the conversion in `#convert`. Specifying a new value using this method, and then calling `#converted_content` without having previously called `#convert`, will trigger an error condition (see `#convert` and/or `#errors` for details).
+Specifies HTML *source content* that will be used for the conversion in `#convert`. Specifying a new value using this method, and then calling `#converted_content` without having previously called `#convert`, will trigger an error condition (see `#convert` and/or `#errors` for details).
 
 #### `#endpoints`
 
@@ -149,15 +139,17 @@ Returns the endpoints specified for the range within the `#content` which is to 
 
 #### `#endpoints=(range)`
 
-Assigns the endpoints of the range within the source `#content` which is to be replaced by the replacement content. Can be either an integer (specifying the ending endpoint, where the starting endpoint is set to zero, the beginning of the string) or a range of non-negative integers. If the specified value is invalid (either because it is not a valid range of non-negative integers or because the ending endpoint exceeds the length of the `#content` when `#convert` is called), will default to `(-1..-1)`.
+Assigns the endpoints of the range within the source `#content` which is to be replaced by the re­placement content. Can be either an integer (specifying the ending endpoint, where the starting endpoint is set to zero, the beginning of the string) or a range of non-negative integers. If the speci­fied value is invalid (either because it is not a valid range of non-negative integers or because the ending endpoint exceeds the length of the `#content` when `#convert` is called), will default to `(-1..-1)` and cause an error to be reported (see `#errors`, below).
 
 #### `#replacement`
 
-Returns the content string specified to replace the existing content within the endpoints, specified by either `#initialize` or `#replacement=`. This will be either HTML or Markdown, as specified to either of those two methods. (Using its HTML-converted value in the `#convert` method will not affect the attribute's value if it was assigned as Markdown.)
+Returns the content string specified to replace the existing content within the endpoints, specified by either `#initialize` or `#replacement=`. This is guaranteed to be either an empty string or a valid HTML string.
 
 #### `#replacement=(str)`
 
-Specifies content, either as Markdown or as HTML, whose HTML equivalent will be used to replace an existing range of content by a successful call to `#convert`. Assigning to this, or any of the other attributes, will trigger an error condition (see `#convert` and/or `#errors` for details).
+Specifies content, as an HTML string, that will be used to replace an existing range of content by a successful call to `#convert`. Assigning to this, or any of the other attributes and then calling `#converted_content` without first calling `#convert` will report an error (see `#convert` and/or `#errors` for details).
+
+If a string without HTML tags is specified, then it will be used literally; if replacing the content between the endpoints with that replacement string results in invalid HTML, then that also will cause an error to be reported.
 
 The default value is the empty string.
 
@@ -165,7 +157,7 @@ The default value is the empty string.
 
 #### `#convert`
 
-Inserts marker tag pairs, if specified (see `#markers`), in the source content at the specified end­points, converting from Markdown to HTML, and then replacing the content between the marker tag pairs with the `#replacement_content`, then ensures that the resulting HTML is valid and well-formed. If no `#markers` were specified, removes them from the resulting HTML before assigning it to the `converted_content` attribute.
+Inserts marker tag pairs, if specified (see `#markers`), in the source content at the specified end­points, and then replaces the content corresponding to the original endpoints (whether or not bounded by marker tag pairs) with the `#replacement_content`, then ensures that the resulting HTML is valid and well-formed. If no `#markers` were specified, removes them from the resulting HTML before assigning it to the `converted_content` attribute.
 
 If the conversion was successful in all respects, returns `true`; else returns `false` and sets internal `errors` describing the failure which aborted the conversion.
 
