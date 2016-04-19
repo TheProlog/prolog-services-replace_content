@@ -30,6 +30,7 @@ module Prolog
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def converted_content
+        errors[:conversion] = ['not called'] unless @content_after_conversion
         @content_after_conversion || :oops
       end
 

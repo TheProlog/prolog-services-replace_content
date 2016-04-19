@@ -192,5 +192,30 @@ describe 'Prolog::Services::ReplaceContent' do
         expect(obj.errors).must_equal expected
       end
     end # describe 'replacing content as specified produces invalid HTML'
+
+    describe 'failing to call #convert prior to calling #converted_content' do
+      let(:endpoints) { (endpoint_begin...endpoint_end) }
+      let(:replacement) { 'replacement content' }
+      let(:content) do
+        '<p>This is <em>source</em> material for the test.</p>'
+      end
+      let(:endpoint_begin) { content.index '<em>source' }
+      let(:endpoint_end) { content.index ' for the test.' }
+
+      before { @content = obj.converted_content }
+
+      it 'is invalid' do
+        expect(obj).wont_be :valid?
+      end
+
+      it 'indicates an error when calling #converted_content' do
+        expect(@content).must_equal :oops
+      end
+
+      it 'returns the correct error data from #errors' do
+        expected = { conversion: ['not called'] }
+        expect(obj.errors).must_equal expected
+      end
+    end # describe 'failing to call #convert prior to ... #converted_content'
   end # describe 'detects errors correctly, including'
 end
