@@ -2,7 +2,7 @@
 
 require 'ox'
 
-require 'prolog/services/replace_content/content_splitter'
+require 'prolog/services/replace_content/splitter/symmetric'
 require 'prolog/services/replace_content/version'
 
 module Prolog
@@ -10,7 +10,7 @@ module Prolog
     # Replaces content within an HTML string based on endpoints and content.
     # FIXME: Reek thinks this has :reek:TooManyInstanceVariables; cleanup soonn.
     class ReplaceContent
-      attr_reader :content, :endpoints, :errors, :replacement
+      attr_reader :content, :endpoints, :errors, :markers, :replacement
 
       def initialize(content: '', endpoints: (-1..-1), replacement: '')
         @content = content
@@ -33,6 +33,10 @@ module Prolog
         errors[:conversion] = ['not called'] unless @content_after_conversion
         @content_after_conversion || :oops
       end
+
+      # def markers=(*params)
+      #   @markers = params
+      # end
 
       def valid?
         errors.empty?
@@ -75,9 +79,10 @@ module Prolog
         Ox.parse twiddled # raises on most errors
       end
 
-      def splitter(marker = ContentSplitter::DEFAULT_MARKER)
-        ContentSplitter.new content: content, endpoints: endpoints,
-                            marker: marker
+      def splitter(marker = Splitter::Symmetric::DEFAULT_MARKER)
+        # ap [:line_83, @markers, marker]
+        Splitter::Symmetric.new content: content, endpoints: endpoints,
+                                marker: marker
       end
 
       def validate

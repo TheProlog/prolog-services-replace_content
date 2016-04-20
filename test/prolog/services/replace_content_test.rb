@@ -116,6 +116,28 @@ describe 'Prolog::Services::ReplaceContent' do
     end # describe 'with a complete set of valid attributes'
   end # describe 'when using attribute setters'
 
+  describe 'supports setting marker tag pairs in converted content' do
+    let(:endpoints) { (endpoint_begin...endpoint_end) }
+    let(:replacement) { 'replacement content' }
+    let(:content) { '<p>This is a <em>simple</em> test.</p>' }
+    let(:endpoint_begin) { content.index '<em>simple' }
+    let(:endpoint_end) { content.index ' test.' }
+    let(:obj) { described_class.new params }
+    let(:params) do
+      { content: content, endpoints: endpoints, replacement: replacement }
+    end
+
+    describe 'using tag identifiers (symbols) only' do
+      before do
+        obj.markers = :span
+        obj.convert
+      end
+    end # describe 'using tag identifiers (symbols) only'
+
+    describe 'using both tag identifiers and ID name prefix strings' do
+    end # describe 'using both tag identifiers and ID name prefix strings'
+  end # describe 'supports setting marker tag pairs in converted content'
+
   describe 'detects errors correctly, including' do
     describe 'invalid initial content' do
       let(:content) { '<p>This is a <em>simple</strong> test.</p>' }
