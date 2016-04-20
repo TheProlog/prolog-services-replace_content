@@ -2,6 +2,7 @@
 
 require 'ox'
 
+require 'prolog/services/replace_content/splitter/paired'
 require 'prolog/services/replace_content/splitter/symmetric'
 require 'prolog/services/replace_content/version'
 
