@@ -141,6 +141,36 @@ Returns the endpoints specified for the range within the `#content` which is to 
 
 Assigns the endpoints of the range within the source `#content` which is to be replaced by the re­placement content. Can be either an integer (specifying the ending endpoint, where the starting endpoint is set to zero, the beginning of the string) or a range of non-negative integers. If the speci­fied value is invalid (either because it is not a valid range of non-negative integers or because the ending endpoint exceeds the length of the `#content` when `#convert` is called), will default to `(-1..-1)` and cause an error to be reported (see `#errors`, below).
 
+#### `#markers=`
+
+Specifies the details of the marker tag pairs to be used to wrap the content within the endpoints. If not explicitly set, no such tag pairs will be used. May be set using a symbolic HTML tag name (e.g. `:span` for the HTML `<span>` tag pair) and, optionally, an "identifier" string.
+
+Examples:
+
+```ruby
+# Setting the HTML tag used for the tag pairs to the `<a>` tag
+# ...
+converter.markers = :a
+converter.convert
+converter.converted_content
+# => '<p>This is a <a id="selection-begin"></a>basic<a id="selection-end"></a> test.</p>'
+
+# Setting the markers to the '<a>' tag and the identifier prefix to 'mambo-no-5'
+converter.markers = :a, 'mambo-no-5'
+converter.convert
+converter.converted_content
+# => '<p>This is a <a id="mambo-no-5-begin"></a>basic<a id="mambo-no-5-end"></a> test.</p>'
+
+# Setting the HTML tag without setting the identifier resets the latter to 'selection'
+converter.markers = :span
+converter.convert
+converter.converted_content
+# => '<p>This is a <span id="selection-begin"></span>basic<span id="selection-end"></span> test.</p>'
+
+```
+
+**Note** that setting the markers, as with setting any of the other attributes, invalidates any previous conversion and requires the `#convert` method to be called again prior to calling `#converted_content`.
+
 #### `#replacement`
 
 Returns the content string specified to replace the existing content within the endpoints, specified by either `#initialize` or `#replacement=`. This is guaranteed to be either an empty string or a valid HTML string.
@@ -203,3 +233,4 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/ThePro
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+

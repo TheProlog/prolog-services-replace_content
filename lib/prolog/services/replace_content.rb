@@ -2,8 +2,7 @@
 
 require 'ox'
 
-require 'prolog/services/replace_content/splitter/paired'
-require 'prolog/services/replace_content/splitter/symmetric'
+require 'prolog/services/replace_content/splitter/factory'
 require 'prolog/services/replace_content/version'
 
 module Prolog
@@ -35,9 +34,11 @@ module Prolog
         @content_after_conversion || :oops
       end
 
-      # def markers=(*params)
-      #   @markers = params
-      # end
+      # Setting markers also invalidates the conversion.
+      def markers=(*params)
+        @content_after_conversion = nil
+        @markers = Array(params).flatten
+      end
 
       def valid?
         errors.empty?
@@ -81,9 +82,7 @@ module Prolog
       end
 
       def splitter(marker = Splitter::Symmetric::DEFAULT_MARKER)
-        # ap [:line_83, @markers, marker]
-        Splitter::Symmetric.new content: content, endpoints: endpoints,
-                                marker: marker
+        Splitter::Factory.call(self, marker)
       end
 
       def validate

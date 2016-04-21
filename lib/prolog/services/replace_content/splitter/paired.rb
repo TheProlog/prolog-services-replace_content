@@ -15,7 +15,9 @@ module Prolog
         # attribute strings is 'selection'; that may similary be changed by
         # specifying the `identifier` parameter to the initialiser.
         class Paired
-          def initialize(content:, endpoints:, tag: :a, identifier: 'selection')
+          DEFAULT_ID = 'selection'
+
+          def initialize(content:, endpoints:, tag: :a, identifier: DEFAULT_ID)
             @content = content
             @endpoints = endpoints
             @identifier = identifier
