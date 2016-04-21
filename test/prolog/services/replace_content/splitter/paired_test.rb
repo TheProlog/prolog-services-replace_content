@@ -35,14 +35,56 @@ describe 'Prolog::Services::ReplaceContent::Splitter::Paired' do
     end # describe 'has an #inner method that'
 
     describe 'has a #source method that' do
-      it 'returns the expected content, including content wrapped by markers' do
-        marker_fmt = %(<%s id="%s-%s"></%s>)
-        begin_marker = format marker_fmt, tag, identifier, :begin, tag
-        end_marker = format marker_fmt, tag, identifier, :end, tag
-        expected = [content[0...ep_begin], begin_marker, inner, end_marker,
-                    content[ep_end..-1]].join
-        expect(obj.source).must_equal expected
+      let(:marker_fmt) { %(<%s id="%s-%s"></%s>) }
+      let(:begin_marker) { format marker_fmt, tag, identifier, :begin, tag }
+      let(:end_marker) { format marker_fmt, tag, identifier, :end, tag }
+      let(:leading) { content[0...ep_begin] }
+      let(:trailing) { content[ep_end..-1] }
+      let(:expected) do
+        [leading, begin_marker, inner, end_marker, trailing].join
       end
+
+      describe 'when using default :tag and :identifier values' do
+        it 'returns the expected content, including marker-wrapped content' do
+          expect(obj.source).must_equal expected
+        end
+      end # describe 'when using default :tag and :identifier values'
+
+      describe 'when initialised with a non-default value for' do
+        describe ':tag' do
+          let(:tag) { :span }
+
+          before { params[:tag] = tag }
+
+          it 'wraps the inner content using the specified tag pairs' do
+            expect(obj.source).must_equal expected
+          end
+        end # describe ':tag'
+
+        describe ':identifier' do
+          let(:identifier) { 'example-472' }
+
+          before { params[:identifier] = identifier }
+
+          it 'wraps the inner content using the specified identifier IDs' do
+            expect(obj.source).must_equal expected
+          end
+        end # describe ':identifier'
+
+        describe 'both :tag and :identifier' do
+          let(:tag) { :b }
+          let(:identifier) { 'mambo-no-5' }
+
+          before do
+            params[:identifier] = identifier
+            params[:tag] = tag
+          end
+
+          it 'wraps the inner content using the specified identifier IDs' do
+            expect(obj.source).must_equal expected
+          end
+        end # describe 'both :tag and :identifier'
+      end # describe 'when initialised with a non-default value for'
     end # describe 'has a #source method that'
   end # describe 'within the simplest golden path'
 end
