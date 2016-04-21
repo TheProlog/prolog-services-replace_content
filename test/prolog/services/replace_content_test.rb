@@ -116,6 +116,47 @@ describe 'Prolog::Services::ReplaceContent' do
     end # describe 'with a complete set of valid attributes'
   end # describe 'when using attribute setters'
 
+  describe 'supports setting marker tag pairs in converted content' do
+    let(:endpoints) { (endpoint_begin...endpoint_end) }
+    let(:replacement) { 'replacement content' }
+    let(:content) { '<p>This is a <em>simple</em> test.</p>' }
+    let(:endpoint_begin) { content.index '<em>simple' }
+    let(:endpoint_end) { content.index ' test.' }
+    let(:expected) do
+      marker_ary = Array(markers).flatten
+      tag = marker_ary.first
+      ident = marker_ary[1] || 'selection'
+      fmt_str = '<p>This is a <%s id="%s-begin"></%s>replacement content' \
+        '<%s id="%s-end"></%s> test.</p>'
+      format fmt_str, tag, ident, tag, tag, ident, tag
+    end
+    let(:obj) { described_class.new params }
+    let(:params) do
+      { content: content, endpoints: endpoints, replacement: replacement }
+    end
+
+    before do
+      obj.markers = markers
+      obj.convert
+    end
+
+    describe 'using tag identifiers (symbols) only' do
+      let(:markers) { :span }
+
+      it 'produces the expected converted content' do
+        expect(obj.converted_content).must_equal expected
+      end
+    end # describe 'using tag identifiers (symbols) only'
+
+    describe 'using both tag identifiers and ID name prefix strings' do
+      let(:markers) { [:span, 'whatever'] }
+
+      it 'produces the expected converted content' do
+        expect(obj.converted_content).must_equal expected
+      end
+    end # describe 'using both tag identifiers and ID name prefix strings'
+  end # describe 'supports setting marker tag pairs in converted content'
+
   describe 'detects errors correctly, including' do
     describe 'invalid initial content' do
       let(:content) { '<p>This is a <em>simple</strong> test.</p>' }
