@@ -184,27 +184,49 @@ describe 'Prolog::Services::ReplaceContent' do
       end
     end # describe 'invalid enpoints (yielding invalid markup)'
 
-    describe 'invalid endpoints (invalidating content as HTML)' do
-      let(:content) { '<p>This is a <em>simple</em> test.</p>' }
-      let(:endpoints) { (15...23) }
-      let(:replacement) { 'basic' }
+    describe 'endpoints which' do
+      describe 'invalidate the content as HTML' do
+        let(:content) { '<p>This is a <em>simple</em> test.</p>' }
+        let(:endpoints) { (15...23) }
+        let(:replacement) { 'basic' }
 
-      it 'is invalid' do
-        obj.convert
-        expect(obj).wont_be :valid?
-      end
+        it 'is invalid' do
+          obj.convert
+          expect(obj).wont_be :valid?
+        end
 
-      it 'indicates an error when calling #converted_content' do
-        obj.convert
-        expect(obj.converted_content).must_equal :oops
-      end
+        it 'indicates an error when calling #converted_content' do
+          obj.convert
+          expect(obj.converted_content).must_equal :oops
+        end
 
-      it 'returns the correct error data from #errors' do
-        obj.convert
-        expected = { endpoints: ['invalid'] }
-        expect(obj.errors).must_equal expected
-      end
-    end # describe 'invalid endpoints (invalidating content as HTML)'
+        it 'returns the correct error data from #errors' do
+          obj.convert
+          expected = { endpoints: ['invalid'] }
+          expect(obj.errors).must_equal expected
+        end
+      end # describe 'invalidate the content as HTML'
+
+      describe 'are out of valid range with respect to the content' do
+        let(:content) { '<p>Testing.</p>' }
+        let(:endpoints) { (0..-1) }
+        let(:replacement) { 'anything' }
+
+        after do
+          obj.convert
+          expected = { endpoints: ['invalid'] }
+          expect(obj.errors).must_equal expected
+        end
+
+        it 'begin index' do
+          params[:endpoints] = (800..-1)
+        end
+
+        # it 'end index' do
+        #   params[:endpoints] = (0..800)
+        # end
+      end # describe 'are out of valid range with respect to the content'
+    end # describe 'endpoints which'
 
     describe 'replacing content as specified produces invalid HTML' do
       let(:content) { '<ul><li>First item</li><li>Second item</li></ul>' }

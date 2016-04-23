@@ -28,7 +28,22 @@ module Prolog
           # content.
           class Parts
             def self.parts(content, endpoints)
-              [content[0...endpoints.begin], content[endpoints.end..-1]]
+              _twiddle(_split(content.dup, endpoints))
+            end
+
+            def self._marker
+              'z|q|x' * 8
+            end
+
+            def self._split(working, endpoints)
+              marker = _marker
+              working[endpoints] = marker
+              working.split marker
+            end
+
+            def self._twiddle(items)
+              return ['', ''] if items.empty?
+              items
             end
           end # class Prolog::Services::ReplaceContent::ContentSplitter::Parts
 

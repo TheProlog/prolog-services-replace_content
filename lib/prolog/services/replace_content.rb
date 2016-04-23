@@ -78,11 +78,13 @@ module Prolog
       def parse_with_comments
         comment = '<!-- -->'
         twiddled = splitter(comment).source
-        Ox.parse twiddled # raises on most errors
+        ret = Ox.parse twiddled # raises on most errors
+        ret
       end
 
       def splitter(marker = Splitter::Symmetric::DEFAULT_MARKER)
-        Splitter::Factory.call(self, marker)
+        ret = Splitter::Factory.call(self, marker)
+        ret
       end
 
       def validate
@@ -101,12 +103,18 @@ module Prolog
         false
       end
 
+      def _invalidate_endpoints
+        errors[:endpoints] = %w(invalid)
+        false
+      end
+
       def validate_endpoints
         parse_with_comments
         true
       rescue Ox::ParseError
-        errors[:endpoints] = ['invalid']
-        false
+        _invalidate_endpoints
+      rescue RangeError
+        _invalidate_endpoints
       end
     end # class Prolog::Services::ReplaceContent
   end
