@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Jeff Dickey']
   spec.email         = ['jdickey@seven-sigma.com']
 
-  spec.summary       = %q{Replaces HTML within a specified range, using either HTML or Mardown replacement content.}
+  spec.summary       = %q{Replaces HTML within a specified range with HTML replacement content.}
   # TOODOO should be an obvious typo; added to silence CodeClimate scan.
   # spec.description   = %q{TOODOO: Write a longer description or delete this line.}
   spec.homepage      = 'https://github.com/TheProlog/prolog-services-replace_content'
