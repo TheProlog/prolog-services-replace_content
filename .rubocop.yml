@@ -1,43 +1,21 @@
 
-# CodeClimate runs an older version of RuboCop, which apparently doesn't
-# understand the `AllCops` setting. So we do it The Hard Way.
-
-Metrics/LineLength:
-  Exclude:
-    - Rakefile
-    - prolog-services-replace_content.gemspec
-
-Style/PercentLiteralDelimiters:
-  Exclude:
-    - prolog-services-replace_content.gemspec
-
-Style/PercentQLiterals:
-  Exclude:
-    - prolog-services-replace_content.gemspec
-
-Style/StringLiterals:
-  Exclude:
-    - Rakefile
-    - prolog-services-replace_content.gemspec
-    - bin/console
-
-Style/UnneededPercentQ:
-  Exclude:
-    - prolog-services-replace_content.gemspec
-
-Style/WordArray:
-  Exclude:
-    - Rakefile
-
-# 'Real' settings follow. ###################################
-
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.5
 
-Metrics/AbcSize:
-  Exclude:
-    - test/prolog/use_cases/propose_edit_contribution_test.rb
+Metrics/BlockLength:
+  Max: 300
+  Include:
+    - 'test/**/*_test.rb'
 
-Metrics/MethodLength:
-  Exclude:
-    - test/prolog/use_cases/propose_edit_contribution_test.rb
+Metrics/ModuleLength:
+  Max: 300
+  Include:
+    - 'test/**/*_test.rb'
+
+Style/CommentedKeyword:
+  Enabled: false
+
+# FIXME: Obsolete code style ignored courtesy of the following:
+
+Lint/Void:
+  Enabled: false

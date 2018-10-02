@@ -1,5 +1,5 @@
-
 # frozen_string_literal: true
+
 require_relative './splitter_params'
 
 module Prolog

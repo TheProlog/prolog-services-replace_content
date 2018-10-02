@@ -43,6 +43,7 @@ module Prolog
 
             def self._twiddle(items)
               return ['', ''] if items.empty?
+
               items
             end
           end # class Prolog::Services::ReplaceContent::ContentSplitter::Parts

@@ -24,10 +24,11 @@ module Prolog
       def convert
         validate
         return false unless valid?
+
         set_converted_content
         valid?
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:enable
 
       def converted_content
         errors[:conversion] = ['not called'] unless @content_after_conversion
@@ -104,7 +105,7 @@ module Prolog
       end
 
       def _invalidate_endpoints
-        errors[:endpoints] = %w(invalid)
+        errors[:endpoints] = %w[invalid]
         false
       end
 

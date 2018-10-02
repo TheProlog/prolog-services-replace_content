@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
 require 'pry-byebug'
 require 'simplecov'
@@ -11,6 +11,12 @@ require 'semantic_logger'
 
 uses_cova = ENV['COVERALLS_REPO_TOKEN']
 uses_cc = ENV['CODECLIMATE_REPO_TOKEN']
+
+SimpleCov.start do
+  coverage_dir './tmp/coverage'
+  add_filter '/lib/tasks/'
+  add_filter '/tmp/gemset/'
+end
 
 reporter_class = SimpleCov
 
@@ -46,7 +52,8 @@ SemanticLogger.add_appender file_name: 'log/testing.log', formatter: :color
 require 'minitest/autorun' # harmless if already required
 require 'minitest/reporters'
 Minitest::Reporters.use! [Minitest::Reporters::DefaultReporter.new(
-  color: true, detailed_skip: true, fast_fail: true)]
+  color: true, detailed_skip: true, fast_fail: true
+)]
 
 # Set up MiniTest::Tagz, with stick-it-anywhere `:focus` support.
 require 'minitest/tagz'

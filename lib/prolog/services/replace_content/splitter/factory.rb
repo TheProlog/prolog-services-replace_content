@@ -46,6 +46,7 @@ module Prolog
 
           def self.call(data, marker)
             return Internals.splitter_with_markers(data) if data.markers
+
             Internals.symmetric_splitter data, marker
           end
         end # class Prolog::Services::ReplaceContent::Splitter::Factory

@@ -10,3 +10,6 @@
 /o-rdoc/
 /log/
 !/log/.keep
+/bin/
+!/bin/setup
+.rbenv-gemsets

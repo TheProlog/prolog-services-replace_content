@@ -24,7 +24,7 @@ describe 'Prolog::Services::ReplaceContent' do
     describe 'accepts parameters for' do
       let(:the_method) { described_class.new.method :initialize }
 
-      [:content, :endpoints, :replacement].each do |attrib|
+      %i[content endpoints replacement].each do |attrib|
         it ":#{attrib}" do
           params = [:key, attrib]
           expect(the_method.parameters).must_include params
@@ -79,8 +79,10 @@ describe 'Prolog::Services::ReplaceContent' do
       described_class.set_content(
         described_class.set_endpoints(
           described_class.set_replacement(described_class.new, replacement),
-          endpoints),
-        content)
+          endpoints
+        ),
+        content
+      )
     end
     let(:converted_content) { '<ul><li>First</li><li>Last</li></ul>' }
     let(:replacement) { 'Last' }

@@ -15,6 +15,8 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/TheProlog/prolog-services-replace_content'
   spec.license       = 'MIT'
 
+  spec.metadata['yard.run'] = 'yri'
+
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.
   # if spec.respond_to?(:metadata)
@@ -30,24 +32,24 @@ Gem::Specification.new do |spec|
 
   # spec.add_dependency 'pandoc-ruby', '~> 2'
   # spec.add_dependency 'prolog-services-markdown_to_html', '~> 1.0'
-  spec.add_dependency 'semantic_logger', '~> 3.2'
-  spec.add_dependency 'ox', '~> 2.3'
+  spec.add_dependency 'semantic_logger'
+  spec.add_dependency 'ox'
 
-  spec.add_development_dependency 'bundler', '~> 1.11'
-  spec.add_development_dependency 'rake', '~> 11'
-  spec.add_development_dependency 'minitest', '~> 5.0'
+  spec.add_development_dependency 'bundler'
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'minitest'
 
-  spec.add_development_dependency "minitest-matchers", "~> 1.4"
-  spec.add_development_dependency "minitest-reporters", "~> 1.0"
-  spec.add_development_dependency "minitest-tagz", "~> 1.2"
-  spec.add_development_dependency "flay", "~> 2.6"
-  spec.add_development_dependency "flog", "~> 4.3", ">= 4.3.2"
-  spec.add_development_dependency "reek", "~> 4.0"
-  spec.add_development_dependency "rubocop", "0.39.0"
-  spec.add_development_dependency "simplecov", "~> 0.10"
-  spec.add_development_dependency "pry-byebug", "~> 3.2"
-  spec.add_development_dependency "pry-doc", "~> 0.8"
-  spec.add_development_dependency "colorize", "~> 0.7", ">= 0.7.7"
-  spec.add_development_dependency "awesome_print", "~> 1.6", ">= 1.6.1"
-  spec.add_development_dependency "codeclimate-test-reporter", "~> 0.5"
+  spec.add_development_dependency "minitest-matchers"
+  spec.add_development_dependency "minitest-reporters"
+  spec.add_development_dependency "minitest-tagz"
+  spec.add_development_dependency "flay"
+  spec.add_development_dependency "flog"
+  spec.add_development_dependency "reek"
+  spec.add_development_dependency "rubocop"
+  spec.add_development_dependency "simplecov"
+  spec.add_development_dependency "pry-byebug"
+  spec.add_development_dependency "pry-doc"
+  spec.add_development_dependency "colorize"
+  spec.add_development_dependency "awesome_print"
+  spec.add_development_dependency "codeclimate-test-reporter"
 end

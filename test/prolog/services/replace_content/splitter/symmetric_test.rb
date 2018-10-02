@@ -80,8 +80,8 @@ describe 'Prolog::Services::ReplaceContent::Splitter::Symmetric' do
 
     describe 'and a content string with repeating character sequences' do
       let(:content) do
-        %w(How much wood could a wood chuck chuck if a wood chuck could chuck
-           wood?).join ' '
+        %w[How much wood could a wood chuck chuck if a wood chuck could chuck
+           wood?].join ' '
       end
       let(:endpoints) { (44..47) } # third of four 'wood' occurrences
 
